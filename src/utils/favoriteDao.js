@@ -26,14 +26,10 @@ export default class FavoriteDao {
   updateFavoriteKeys (key, isAdd) {
     let self = this
     var favoriteKeys = []
-    wx.getStorage({
-      key: this.favoriteKey,
-      success: function (res) {
-        if (res) {
-          favoriteKeys = JSON.parse(res.data)
-        }
-      },
-      complete: function () {
+    try {
+      const data = wx.getStorageSync(this.favoriteKey)
+      if (data) {
+        favoriteKeys = JSON.parse(data)
         var index = favoriteKeys.indexOf(key)
         if (isAdd) {
           if (index === -1) favoriteKeys.push(key)
@@ -42,7 +38,9 @@ export default class FavoriteDao {
         }
         wx.setStorageSync(self.favoriteKey, JSON.stringify(favoriteKeys))
       }
-    })
+    } catch (e) {
+      // Do something when catch error
+    }
   }
 
   /**
@@ -50,12 +48,10 @@ export default class FavoriteDao {
    * @return {Promise}
    */
   getFavoriteKeys () {
-    console.log(this.favoriteKey)
     return new Promise((resolve, reject) => {
       wx.getStorage({
         key: this.favoriteKey,
         success: function (res) {
-          console.log(res)
           try {
             resolve(JSON.parse(res.data))
           } catch (e) {
@@ -71,12 +67,8 @@ export default class FavoriteDao {
    * @param key 项目 id
    */
   removeFavoriteItem (key) {
-    wx.removeStorage({
-      key: key,
-      success: function (res) {
-        this.updateFavoriteKeys(key, false)
-      }
-    })
+    wx.removeStorageSync(key)
+    this.updateFavoriteKeys(key, false)
   }
 
   /**

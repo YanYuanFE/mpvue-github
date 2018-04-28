@@ -43,6 +43,8 @@ import { getTrendingByTime } from '@/utils/api'
 import TrendingUtil from '@/utils/trendingUtil'
 import ActionUtils from '@/utils/actionUtils'
 import FavoriteDao from '@/utils/favoriteDao'
+import ProjectModel from '@/utils/projectModel'
+import Utils from '@/utils/utils'
 
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending)
 
@@ -106,12 +108,33 @@ export default {
       .then(res => {
         const result = TrendingUtil.htmlToRepo(res)
         console.log(result)
-        this.data = result
+        this.list = result
+        this.getFavoriteKeys()
       })
     },
     toggleFavorite (item, isFavorite) {
       console.log(item)
       ActionUtils.onFavorite(favoriteDao, item, isFavorite, FLAG_STORAGE.flag_trending)
+      this.getFavoriteKeys()
+    },
+    getFavoriteKeys () {
+      favoriteDao.getFavoriteKeys().then((keys) => {
+        console.log(keys)
+        if (keys.length) {
+          this.favoriteKeys = keys
+        }
+        this.flushFavoriteState()
+      })
+    },
+    flushFavoriteState () {
+      let projectModels = []
+      this.list.forEach((item) => {
+        const {fullName, description, contributors} = item
+        const props = {fullName, description, contributors}
+        projectModels.push(new ProjectModel({...props, isFavorite: Utils.checkFavorite(item, this.favoriteKeys)}))
+      })
+      this.data = projectModels
+      console.log(this.data)
     }
   },
 

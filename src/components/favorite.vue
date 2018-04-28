@@ -5,7 +5,7 @@
         <popular 
           :repo="item" 
           v-for="item in list" 
-          :key="item.fullName"
+          :key="item.id"
           @onFavorite="toggleFavorite"/>
       </view>
     </block>

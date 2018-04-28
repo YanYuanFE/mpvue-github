@@ -14,7 +14,7 @@
           :key="avatar"
           :src="avatar"/>
       </view>
-      <img :src="favoriteIcon" alt="" class="img" @click="toggleFavorite">
+      <img :src="favoriteIcon" alt="" class="img" @tap="toggleFavorite">
     </view>
   </view>
 </template>
