@@ -2,7 +2,7 @@
   "name": "mpvue-github",
   "version": "1.0.0",
   "description": "A Mpvue project",
-  "author": "yany2 <yuan.yan@dianrong.com>",
+  "author": "YanYuanFE",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",
